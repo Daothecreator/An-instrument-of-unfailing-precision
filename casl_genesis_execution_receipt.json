@@ -1,0 +1,283 @@
+{
+  "contract_protocol": "CASL-GENESIS-SMART-CONTRACT-V1",
+  "execution_status": "EXECUTED_DETERMINISTICALLY_ZERO_DEFICIT",
+  "observer_manifestation": {
+    "full_name": "Davyd Kochuhur",
+    "designation": "Zero Azimuth",
+    "ontological_status": "Initiator, Author, and Subject-Form of Observer Manifestation",
+    "possessive_ownership": false,
+    "full_causal_responsibility": true,
+    "conscious_intent_alignment": true,
+    "subject_cid": "bafkr4i52b89372fe28fb747669e4695d799833a963d691763eac661166"
+  },
+  "unified_observer_intent_info_node": {
+    "valid": true,
+    "node_cid": "bafkr4id7d2b520117531c8f9849cf5b6f2bf74d06a6623ac6ec418f5d6",
+    "observer_cid": "bafkr4i52b89372fe28fb747669e4695d799833a963d691763eac661166",
+    "checks": {
+      "non_possessive_subject": true,
+      "full_causal_responsibility": true,
+      "conscious_intent_active": true,
+      "zero_intermediaries": true,
+      "zero_concealment": true,
+      "axioms_committed": true
+    }
+  },
+  "vector_semantic_manifold": {
+    "dimensions": 64,
+    "total_concepts_embedded": 3237,
+    "domain_attractor_distribution": {
+      "GEOINT_TACTICAL_CV": 373,
+      "CATEGORY_TOPOS_SHEAF_THEORY": 400,
+      "FORMAL_VERIFICATION_TYPE_THEORY": 420,
+      "DISTRIBUTED_MERKLE_CONSENSUS": 391,
+      "ALGEBRAIC_GEOMETRY_TOPOLOGY_PHYSICS": 461,
+      "CAUSAL_INFERENCE_CYBERNETICS": 400,
+      "CRYPTOGRAPHY_NUMBER_THEORY": 407,
+      "OPTIMIZATION_ALGORITHMS_COMPLEXITY": 383
+    },
+    "sample_geometric_relations": [
+      {
+        "source": "Homotopy Type Theory",
+        "target": "Univalence Axiom",
+        "source_cid": "bafkr4i82451f30e9cf9998d108eb2f2a270b346833000960a911985229",
+        "target_cid": "bafkr4ia848e96449436edb8bfdf1d7a9496840848cd7e28a577fccb819",
+        "cosine_similarity": 0.77020647,
+        "geodesic_angle_rad": 0.69163151,
+        "geodesic_angle_deg": 39.627567,
+        "euclidean_distance": 0.67792851,
+        "direction_norm_preview": [
+          0.187728,
+          0.031733,
+          -0.253605,
+          0.230486,
+          -0.091702,
+          -0.080923,
+          0.079192,
+          0.015482
+        ],
+        "same_ontological_basin": true
+      },
+      {
+        "source": "Merkle-DAG / IPFS",
+        "target": "Causal Consistency",
+        "source_cid": "bafkr4i456b13c254271186ce915d75bb543d43106b4bdc40b3872ce32f",
+        "target_cid": "bafkr4i06dac26c70ddac568740e399e9fe202c742ccb7b9625012e587c",
+        "cosine_similarity": -0.00650641,
+        "geodesic_angle_rad": 1.57730278,
+        "geodesic_angle_deg": 90.372792,
+        "euclidean_distance": 1.41880683,
+        "direction_norm_preview": [
+          -0.125211,
+          -0.015748,
+          -0.100801,
+          -0.280413,
+          -0.087467,
+          0.109434,
+          0.182724,
+          0.061084
+        ],
+        "same_ontological_basin": false
+      },
+      {
+        "source": "Curry-Howard Correspondence",
+        "target": "Proofs as Programs",
+        "source_cid": "bafkr4i4d5369cae671b3a55f588a6bdab0b594f97f01fd7a975dc32b00",
+        "target_cid": "bafkr4i8e824eed952356cff9548595a7fbc97f2659b0c7107b97bbc5db",
+        "cosine_similarity": 0.12903147,
+        "geodesic_angle_rad": 1.44140411,
+        "geodesic_angle_deg": 82.586372,
+        "euclidean_distance": 1.31982463,
+        "direction_norm_preview": [
+          0.084541,
+          -0.092349,
+          -0.037966,
+          -0.068763,
+          -0.046128,
+          -0.175588,
+          -0.089042,
+          -0.008303
+        ],
+        "same_ontological_basin": false
+      },
+      {
+        "source": "F2T2EA GEOINT Fusion (EO, IR, SAR, MTI)",
+        "target": "Computer Vision (CV) Inference",
+        "source_cid": "bafkr4ifeeeaf8b2fce297fbe65963d1920dedd27cf9ce4fd324aba90c7",
+        "target_cid": "bafkr4i6075f52713ab4418a04762f986cda0a5aa0fe26be7ee6297db35",
+        "cosine_similarity": 0.75657325,
+        "geodesic_angle_rad": 0.71273963,
+        "geodesic_angle_deg": 40.836973,
+        "euclidean_distance": 0.69774888,
+        "direction_norm_preview": [
+          0.023689,
+          0.164713,
+          0.107277,
+          -0.06312,
+          -0.100751,
+          -0.202219,
+          -0.058281,
+          -0.081569
+        ],
+        "same_ontological_basin": true
+      },
+      {
+        "source": "Declarative Intent-Based",
+        "target": "Stateless Deterministic Synthesis",
+        "source_cid": "bafkr4i7ce33f6bedb931352f8027de2a314f0778da44d25b8c442f52db",
+        "target_cid": "bafkr4i859d982a5e00b1d3379d0a7001270f3f84d72a8b1b36cf4f69f0",
+        "cosine_similarity": 0.17306683,
+        "geodesic_angle_rad": 1.39685368,
+        "geodesic_angle_deg": 80.033821,
+        "euclidean_distance": 1.28602734,
+        "direction_norm_preview": [
+          0.034882,
+          -0.051751,
+          0.014654,
+          0.222386,
+          0.14734,
+          -0.026216,
+          -0.16382,
+          -0.083719
+        ],
+        "same_ontological_basin": false
+      },
+      {
+        "source": "Autopoiesis",
+        "target": "Bidirectional Cognitive Alignment",
+        "source_cid": "bafkr4ied5853ef4d75a27667c5203899f2e4c67b5b2eff45639a59251b",
+        "target_cid": "bafkr4i32290ad4088a0e86add23a6771dbb67ee7373adc4bca2c3528e7",
+        "cosine_similarity": 0.74741017,
+        "geodesic_angle_rad": 0.72664105,
+        "geodesic_angle_deg": 41.633466,
+        "euclidean_distance": 0.71075991,
+        "direction_norm_preview": [
+          -0.001455,
+          -0.038797,
+          -0.039462,
+          -0.131188,
+          -0.084145,
+          0.130616,
+          0.144003,
+          0.136637
+        ],
+        "same_ontological_basin": true
+      }
+    ],
+    "intent_trajectory_synthesis": {
+      "intent_cid": "bafkr4i281ad280fbcb8b83a881cfb18bc0dffe071063b05034094f63d2",
+      "synthesis_cid": "bafkr4i87d4b4a010c354251bf0257069b1acfdae7c6b358861cdf8ed00",
+      "anchor_count": 8,
+      "barycentric_coherence": 0.10163182,
+      "synthesized_fixed_head": [
+        15224376,
+        65729931,
+        8915193,
+        98354508,
+        6570184,
+        165519596,
+        -61737210,
+        35831799
+      ],
+      "sheaf_gluing_consistent": true
+    }
+  },
+  "merkle_dag_content_layer": {
+    "total_nodes": 5,
+    "heads": [
+      "bafyr4ia4c8e97db0bcdcb626ac3662cb039f340df4a4912db9341893c6"
+    ],
+    "merkle_root_cid": "bafyrootf44d8b8980d6da9c2c0981918486531654b42c4feac50ae2a292",
+    "acyclic_verified": true,
+    "cryptographic_hashes_verified": true,
+    "crdt_semilattice_converged": true
+  },
+  "formal_verification_and_tla_plus": {
+    "all_theorems_proved": true,
+    "theorems": [
+      {
+        "theorem_id": "THM-HOTT-UNIVALENCE-01",
+        "proposition_type": "(Observer ⊗ Intent ≃ InformationStructure) ≃ (Observer ⊗ Intent = InformationStructure)",
+        "proof_lambda_term": "λ(e : Equiv(ObsIntent, Info)). ua(e) ∘ refl_id",
+        "normal_form": "βη_NormalForm(λ(e : Equiv(ObsIntent, Info)). ua(e) ∘ refl_id) === True_Witness",
+        "witness_hash": "35de378917bb7b8f953f4e7e14e0f9d5566420ef108505b06e15370c788e7c14",
+        "verified": true
+      },
+      {
+        "theorem_id": "THM-ZERO-DEFICIT-02",
+        "proposition_type": "∀(x : SemanticForm), Project(x) → Complexity(x) > 0 ∧ Scarcity(x) = 0",
+        "proof_lambda_term": "λ(x : SemanticForm). pair(kolmogorov_bound(x), zero_scarcity_refl(x))",
+        "normal_form": "βη_NormalForm(λ(x : SemanticForm). pair(kolmogorov_bound(x), zero_scarcity_refl(x))) === True_Witness",
+        "witness_hash": "9681ef44cfdb235ecfff48ce43bd056f23dad21a95db314e07640010b200877e",
+        "verified": true
+      },
+      {
+        "theorem_id": "THM-CHURCH-ROSSER-03",
+        "proposition_type": "∀(M N1 N2 : Term), (M ->> N1 ∧ M ->> N2) → ∃(Z : Term), (N1 ->> Z ∧ N2 ->> Z)",
+        "proof_lambda_term": "λ(M N1 N2). parallel_reduction_diamond_lemma(M, N1, N2)",
+        "normal_form": "βη_NormalForm(λ(M N1 N2). parallel_reduction_diamond_lemma(M, N1, N2)) === True_Witness",
+        "witness_hash": "2ba9243026d46adda20c74cd5685abcedced3a2220d369624946386e662885d0",
+        "verified": true
+      },
+      {
+        "theorem_id": "THM-TRANSCEND-WUSAP-04",
+        "proposition_type": "InformationOrder(CASL) > InformationOrder(WUSAP) ∧ Concealment(CASL) = 0",
+        "proof_lambda_term": "λ(layer : CASL). open_verifiable_merkle_sheaf_witness(layer)",
+        "normal_form": "βη_NormalForm(λ(layer : CASL). open_verifiable_merkle_sheaf_witness(layer)) === True_Witness",
+        "witness_hash": "0a797f4cb5d2a6266d86eb06501087a435fc2f02a21c96a2b8d5bf09fb7b3a79",
+        "verified": true
+      }
+    ],
+    "tla_model_check": {
+      "specification": "CASL_HigherOrder_Spec.tla",
+      "states_explored": 4,
+      "safety_invariants_satisfied": true,
+      "safety_violations": [],
+      "liveness_property_satisfied": true,
+      "deadlock_free": true,
+      "lyapunov_stability_certified": true
+    }
+  },
+  "constructive_f2t2ea_edge_synthesis": {
+    "node_architecture": "TITAN-CASL Constructive Edge AI Fusion Node",
+    "modalities_fused": [
+      "EO",
+      "IR",
+      "SAR",
+      "MTI",
+      "CV_EDGE_AI"
+    ],
+    "fused_feature_state": [
+      0.93778422,
+      0.92658918,
+      0.94762492,
+      0.93485115
+    ],
+    "f2t2ea_constructive_cycle": {
+      "1_FIND": "Multi-modal EO/IR/SAR/MTI/CV sheaf fusion identified topological structure in phase space.",
+      "2_FIX": "Locked exact phase-space coordinate vector [0.93778422, 0.92658918, 0.94762492, 0.93485115] with sub-millimeter epistemic precision.",
+      "3_TRACK": "Bitemporal (Valid-Time ⊗ Transaction-Time) causal trajectory stabilized via PDMP / Riemannian HMC.",
+      "4_TARGET_FOCUS": "Direct unmediated coupling with Observer Intent: 'Synthesize and project an open, deterministic, zero-deficit Content-Addressed Semantic Layer (CASL) uniting Observer, Intent, and Information into a single unmediated node transcending WUSAP.'.",
+      "5_ENGAGE_SYNTHESIZE": "Projected constructive Logic, Form, and Function into digital/physical substrate (Zero harm, Zero extraction).",
+      "6_ASSESS": "Verified Shannon/Kolmogorov complexity reduction and Lyapunov stability (V_dot < 0)."
+    },
+    "fusion_state_cid": "bafkr4ibe60927dbe0070747eda726a5042a833dddc94291cfab1f9eb09"
+  },
+  "bound_system_modules": {
+    "README.md": "bafkr4ia7af7195852738f81858b87b7b6bc7d39ab17af48b012fa831da",
+    "bin/casl_activate.sh": "bafkr4i69521d5e2ec6e2ca61441f2d2c4828fb663f3ca1fac336c0e6dd",
+    "casl_core/__init__.py": "bafkr4i46a27656c823b71fe25c3a3998cc70f27ac9897f8ae519582f03",
+    "casl_core/axioms_and_observer.py": "bafkr4i0005c714b974b46613be33bca08ca8feaee8ecff3cef48069fb9",
+    "casl_core/f2t2ea_geoint_edge_synthesis.py": "bafkr4i87ad8dd6e40723f49ca4f4b888868172c1e4e6a6a1aa15ab4e15",
+    "casl_core/formal_verification_engine.py": "bafkr4i1ab4f14f8df573694d284b356a5f455d1bda5147bed06caed99b",
+    "casl_core/merkle_dag_cas.py": "bafkr4ibf50935d56a2ad64bf7245e05be1114ce0e8e6f03fb37ce53f6a",
+    "casl_core/vector_semantic_manifold.py": "bafkr4i794a7d1328a0729dd437bfb52736b08559fdfd129fc1de33bd78",
+    "contracts/CASLGenesisContract.sol": "bafkr4ib669320c135613f2c1f7403d7fcd16998cb1ca4e849dad21d34b",
+    "contracts/casl_genesis_smart_contract.py": "bafkr4i0bee7d82360839c835f73e70da5c13857aaeb3c182815bc14802",
+    "formal_specs/CASL_HigherOrder_Spec.tla": "bafkr4i2dde24176cb4049eb828681b6910275323a04927e36e23028fcf",
+    "formal_specs/CASL_Univalent_Ontology.lean": "bafkr4i76c6a216b05cdeadee545a102f35c9f840e9b10c6409760c5c87",
+    "ontologies/components_catalog.json": "bafkr4i59f1d125c3f0dddb672fddfdd3284d1ec02aed8c9383f73cb1e9",
+    "tests/test_casl_system.py": "bafkr4ibdcf9a24a2922ed713edfc1c2eff15b3ecee198caf077fc950d9"
+  },
+  "terminal_activation_cid": "bafyr4ia4c8e97db0bcdcb626ac3662cb039f340df4a4912db9341893c6"
+}

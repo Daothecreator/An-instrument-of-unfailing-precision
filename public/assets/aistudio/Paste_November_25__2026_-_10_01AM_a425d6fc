@@ -1,0 +1,474 @@
+1. **Bare-Metal Sovereign & Exascale HPC Supercomputers** (Sferical AI / Sferical One, Gefion, Isambard-AI, LUMI, JUPITER, El Capitan, Frontier, Aurora, BerzeLiUs): Direct liquid-cooled multi-cabinet clusters built on NVIDIA DGX SuperPOD, HPE Cray EX, or Eviden BullSequana XH3000 blades, interconnected via non-blocking fat-tree InfiniBand (HDR / Quantum-2 NDR / Quantum-X800) or 3-hop Dragonfly HPE Slingshot-11 fabrics, coupled to parallel POSIX/NVMe/object filesystems (Lustre, IBM Storage Scale GPFS, VAST Data NVMe-oF, WEKA, DAOS, Ceph S3) and scheduled by Slurm, ParTec ParaStation `psid`/`psslurm`, Flux Framework, or PBS Pro.
+2. **Zero-Trust Enterprise Data, Ontology & AI Operating Platform** (Palantir AIP / Foundry): Multi-tenant, ephemeral Kubernetes compute substrate (**Palantir Rubix**, 48-hour maximum node lifetime, 72-hour container cycling) orchestrated via **Palantir Apollo** continuous delivery across AWS, Azure, GCP, Oracle Cloud, FedRAMP High, DoD DISA IL-5/IL-6, CMMC, and air-gapped on-premises enclaves ([The Rubix Substrate](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Farchitecture-center%2Frubix%2F), [Multimodal Data Plane](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Farchitecture-center%2Fmultimodal-data-plane%2F)).
+
+#### Master Architectural & Hardware Matrix (`01_systems_hardware_architecture.csv`)
+
+| System | Operator / Legal Entity | Platform & Topology | Compute Silicon (CPU / GPU / APU) | Memory & HBM / Node | Interconnect Fabric | Primary Storage | Published Performance & Power | OS & Scheduler |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sferical AI** ([Sferical AI](https://www.google.com/search?q=https%3A%2F%2Fsferical.ai%2Fnewsroom%2Fleading-swedish-companies-launch-sferical-one-shared-ai-supercomputer)) | Sferical AB (`559520-4016`, Stockholm; AstraZeneca, Ericsson, Saab, SEB, Wallenberg Investments, SKF) | Sovereign consortium operating Sferical One + Sferical Labs | Governs Sferical One compute plane (576 Grace CPUs, 1,152 B300 GPUs; NVIDIA Nemotron models) | 37.9 TB coherent/rack via Sferical One | Bare-metal tenant-isolated Quantum-X800 + Spectrum-4 | Dedicated in-country sovereign enterprise storage | >SEK 1B consortium investment; governed by Sferical One envelope | NVIDIA DGX OS; Mission Control / BCM, Slurm, Run:ai |
+| **Sferical One** ([DGX GB300 RA](https://docs.nvidia.com/pdf/dgx-spod-gb300-ra.pdf)) | Sferical AB (`559520-4016`, Sweden; launched Oct 15, 2026) | 2x NVIDIA DGX SuperPOD SUs: 16x DGX GB300 NVL72 racks (288 trays) | 576x 72C Grace Arm64 CPUs + 1,152x Blackwell Ultra B300 GPUs (4 GPUs/tray, 72/rack) | 288 GB HBM3e/GPU (~20.1 TB HBM3e + ~17 TB LPDDR5X = 37.9 TB/rack) | NVLink 5 (1.8 TB/s/GPU, 130 TB/s/rack); 72x ConnectX-8 800 Gb/s Q3400 IB; 18x BF-3 to SN5600 800 GbE | 4x 3.84 TB E1.S NVMe RAID0 + 1.92 TB M.2 OS/tray; certified DGX Storage over SN5600 | Rack peak: 1.44 EF sparse FP4 (1.08 EF dense), 720 PF FP8, 100 TF FP64; ~120-142 kW/rack (~2.4 MW) | NVIDIA DGX OS (Arm64/x86_64), Driver R610+; Mission Control, Slurm, Run:ai |
+| **Palantir AIP / Foundry** ([Rubix](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Farchitecture-center%2Frubix%2F)) | Palantir Technologies Inc. (Cloud / IL5-IL6 / On-Prem) | Palantir Rubix K8s (48h node TTL, 72h container TTL) + Apollo CD | `linux/amd64` autoscaling Spark/Flink/Polars/DuckDB executors + managed GPU k-LLM pools | Dynamic executor RAM; OSv2 decoupled indexing & OSS query layer | Zero-trust mesh, HTTPS/443, Arrow Flight SQL gRPC/443, WebSockets, `localhost:8945` IPC | Versioned Datasets (Parquet/Iceberg/BYOB), Virtual Tables, Media Sets, OSv2 | 10,000 req/min & 800 concurrent/user; 2,000 props/object type; 100k Search Around | Hardened Rubix Linux (`linux/amd64`); Rubix K8s, Foundry Builds, Apollo |
+| **Gefion** ([TOP500 #180299](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Fsystem%2F180299%2F), [IO500 #726](https://www.google.com/search?q=https%3A%2F%2Fio500.org%2Fquestionnaires%2Fview%2F726)) | Danish Centre for AI Innovation A/S (DCAI, Lyngby, Denmark) | NVIDIA DGX SuperPOD: 191x DGX H100 + DGX B300 (>1,540 GPUs; Rubin NVL8 announced Oct 2026) | 382x Xeon Platinum 8480C (112C/node) + 1,528x H100 SXM5 80GB + DGX B300 tier | 2 TB DDR5 + 640 GB HBM3 per DGX H100 (~122.2 TB HBM3 total) | 4th-gen NVLink (900 GB/s/GPU) + Octo-rail Quantum-2 400 Gb/s IB | DDN EXAScaler Lustre (12x NV400X2: 2 MDS/8 VMs, 10 OSS/40 VMs) + 110 PB WEKA NVMe (140 PB total) | TOP500: 66.59 PF Rmax / 100.63 PF Rpeak; IO500 ISC26: 368.56 score, 209.06 GiB/s BW; 100% renewable power | NVIDIA DGX OS (Ubuntu; RHEL on TOP500); BCM + Slurm |
+| **Isambard-AI** ([BriCS Specs](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fspecs%2F), [TOP500 #180388](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Fsystem%2F180388%2F)) | Bristol Centre for Supercomputing (BriCS), Univ. of Bristol, UK | HPE Cray EX254n: Phase 1 (42 nodes, 168 GH200) + Phase 2 (1,320 nodes, 5,280 GH200) | 4x 72C Grace Neoverse-V2 (3.1 GHz, 288C/node) + 4x H100 GPUs (NVLink-C2C) | 460 GB usable LPDDR5X + 384 GB HBM3 = 844 GB usable/node | HPE Slingshot-11, 4x 200 Gbps Cassini NICs/node (800 Gbps injection) | All-flash HPE ClusterStor E1000 Lustre + VAST Data NFS (Phase 2 `$HOME`) + 48 GiB tmpfs `$LOCALDIR` | Phase 2 TOP500 (#15 Nov 2026): 216.50 PF Rmax / 278.58 PF Rpeak (1,028,160 cores); 660 W/GH200 cap | HPE Cray OS / SLES 15 (`linux-sles15-neoverse_v2`); Slurm |
+| **LUMI** ([LUMI Hardware](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fhardware%2F)) | CSC - IT Center for Science (EuroHPC JU, Kajaani, Finland) | HPE Cray EX: 2,978 LUMI-G + 2,048 LUMI-C + 16 LUMI-D + LUMI-K | LUMI-G: 1x 64C EPYC 7A53 (56 usable) + 4x MI250X (8 GCDs); LUMI-C: 2x 64C EPYC 7763 | LUMI-G: 512 GiB DDR4 + 512 GB HBM2e; LUMI-C: 256-1,024 GiB; LUMI-D: up to 4 TB | HPE Slingshot-11 200 Gbps 3-rank Dragonfly (4 NICs/LUMI-G, 276 TB/s; 1 NIC/LUMI-C, 22.4 TB/s) | 117 PB: LUMI-P (4x 20 PB HDD Lustre, 240 GB/s ea), LUMI-F (8 PB SSD, 1,740 GB/s), LUMI-O (30 PB Ceph S3) | LUMI-G HPL: 379.70 PF Rmax; hydroelectric power with waste-heat district heating | Cray Linux Environment (SLES); Slurm + OpenShift (LUMI-K) |
+| **JUPITER** ([JUPITER Config](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fconfiguration.html), [TOP500 #180357](https://www.google.com/search?q=https%3A%2F%2Fwww.top500.org%2Fsystem%2F180357%2F)) | Jülich Supercomputing Centre (JSC, EuroHPC JU, Germany) | Eviden BullSequana XH3000: 5,884 Booster + 12 login + Cluster (582 Turin + 162 Rhea1) | Booster: 4x GH200 (288 Grace cores, 4x H100 96GB); Cluster: 2x 96C EPYC 9655 / 2x 80C SiPearl Rhea1 | Booster: 480 GiB LPDDR5X + 384 GB HBM3; Cluster: 768/1,536 GB DDR5 or 128 GB HBM2e + 512 GB DDR5 | Quad-Rail NVIDIA Quantum IB NDR200 (ConnectX-7, 800 Gb/s/node), 27-group Dragonfly+ adaptive routing | IBM Storage Scale GPFS Multi-Cluster EXAJUST: ExaSTORE (`/e/`, ~1.2 TB/s R), ExaFLASH (15 PB), JUST6 (`/p/`) | TOP500 (#5 Nov 2026): 1,000.00 PF Rmax / 1,226.28 PF Rpeak (4,801,344 cores); 15,793.81 kW; 680 W/GH200 | RHEL 9; Slurm + ParTec ParaStation `psid`/`psslurm` |
+| **El Capitan** ([LLNL Hardware](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fhardware-overview), [TOP500 Jun 2026](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Flists%2Ftop500%2F2026%2F06%2F)) | Lawrence Livermore National Laboratory (LLNL, U.S. DOE / NNSA) | HPE Cray EX255a: 90 cabinets, 11,520 nodes (11,424 batch, 64 debug, 32 login) | 4x AMD Instinct MI300A APUs/node (96 Zen 4 cores [84 user], 228 CDNA 3 CUs/APU; 46,080 APUs) | 512 GiB unified HBM3/node (4x 128 GB @ 5.3 TB/s + 256 MB Infinity Cache @ 17.2 TB/s) | HPE Slingshot-11 Dragonfly (4x 200 Gbps NICs/node, 100 GB/s injection; dual 256 GB/s intra-node IF) | 720 Rabbit NNF modules (16 SSDs + 1 EPYC ea; `/l/ssd` + dynamic DWS XFS/Lustre) + `/p/lustre4` | TOP500 (#2 Jun 2026): 1,809.00 PF Rmax / 2,821.10 PF Rpeak; HPCG 17.41 PF; HPL-MxP 16.7 EF; 29,685 kW | TOSS 4 (RHEL 8.x/8.10); Flux Framework + `flux-coral2` |
+| **Frontier** ([Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html), [TOP500 Jun 2026](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Flists%2Ftop500%2F2026%2F06%2F)) | Oak Ridge Leadership Computing Facility (OLCF / ORNL, U.S. DOE) | HPE Cray EX235a: 77 Olympus cabinets, 9,856 compute + 17 login nodes | 1x 64C EPYC 7A53 (8 cores reserved `-S 8`) + 4x AMD Instinct MI250X (8 GCDs, 110 CUs/GCD) | 512 GB DDR4 + 512 GB HBM2e (8x 64 GB @ 1.6 TB/s) per node | HPE Slingshot-11 3-hop Dragonfly (4x 200 Gbps NICs/node, 100 GB/s injection; 200+200 GB/s intra-MI250X) | Orion 679 PB Lustre (`/lustre/orion/`) + 2x 1.92 TB NVMe/node (`/mnt/bb`) + NFS + Kronos archive | TOP500 (#3 Jun 2026): 1,353.00 PF Rmax / 2,055.72 PF Rpeak; HPCG 14.05 PF; HPL-MxP 11.4 EF; 24,607 kW | HPE Cray OS 2.4 (SLES 15.4); Slurm (+ optional nested Flux) |
+| **Aurora** ([ALCF Running Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Frunning-jobs-aurora%2F), [TOP500 Jun 2026](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Flists%2Ftop500%2F2026%2F06%2F)) | Argonne Leadership Computing Facility (ALCF / ANL, U.S. DOE) | HPE Cray EX: 166 racks, 10,624 blades/nodes (`x<r>c<c>s<s>b0n0`) | 2x Intel Xeon CPU Max 9470 (104C/208T; cores 0/52 OS) + 6x Intel GPU Max 1550 PVC (12 tiles, 4 CCS/tile) | 128 GB CPU HBM + 1,024 GB DDR5 + 768 GB GPU HBM/node (20.4 PB total) | HPE Slingshot-11 Dragonfly (1 rack = 1 group; 8x 200 Gbps Cassini NICs/node, 200 GB/s, 2.12 PB/s system) | DAOS 230 PB / 31 TB/s (1,024 nodes; 800 user nodes) + Flare 91 PB Lustre + Gecko 12 PB `/home` | TOP500 (#4 Jun 2026): 1,012.00 PF Rmax / 1,980.01 PF Rpeak; HPCG 5.61 PF; HPL-MxP 11.6 EF; 38,698 kW | SLES 15 SP7 + SHS 14.0.1 + Agama 1146.78; PBS Pro 2026.1.0 + PALS |
+| **BerzeLiUs** ([NSC Berzelius](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-getting-started%2F), [TOP500 #48488](https://www.google.com/search?q=https%3A%2F%2Ftop500.org%2Fsite%2F48488%2F)) | National Supercomputer Centre (NSC), Linköping Univ. (`202100-3096`) | NVIDIA DGX SuperPOD (Atos/Eviden): 60x thin A100 + 34x fat A100 + 16x H200 + 16x CPU | 480x A100 40GB + 272x A100 80GB + 128x H200 141GB (880 GPUs); EPYC 7742 / Xeon 8480C / EPYC 9534 | 1 TB (thin) / 2 TB (fat) / 2.1 TB (H200) RAM + 320 / 640 / 1,128 GB HBM | 8x Mellanox HDR InfiniBand/DGX non-blocking fat-tree (200 GB/s RDMA) + dedicated HDR storage fabric | VAST Data NVMe-oF (8x CBoxes, 3x DBoxes, 3 PB physical) + `/scratch/local` (15/30/6.4 TB NVMe) | TOP500: Berzelius 5.253 PF; Berzelius2 4.214 PF; Berzelius3 6.423 PF Rmax / 8.679 PF Rpeak; 700 W/H200 | RHEL 8.8 (Driver 580.105.08 / CUDA 13.0); Slurm + NSC tools |
+
+### 1.2 Mandatory System Dependencies, Compilers, Runtimes, and Libraries (`02_software_stack_modules_deployment.csv`)
+
+| System | Compilers & Programming Environments | GPU / Accelerator Runtimes | MPI / Collective / Fabric Libraries | Container & Package Tooling |
+| :--- | :--- | :--- | :--- | :--- |
+| **Sferical One / Gefion** | GCC, NVHPC, NVIDIA AI Enterprise, NVIDIA Nemotron / BioNeMo / CUDA Quantum ([Mission Control 2.2.0](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fmission-control%2Fdocs%2Fsystems-administration-guide%2F2.2.0%2Foverview.html), [DCAI Gefion](https://www.google.com/search?q=https%3A%2F%2Fdcai.dk%2Fgefion)) | CUDA, Driver R610+ (`NVreg_CoherentGPUMemoryMode=driver` on GB300), cuDNN, TensorRT ([NVIDIA Coherency](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fdgx%2Fdgx-station-development-guide%2Fcoherency.html)) | NCCL, OpenUCX (`UCX_TLS`), OpenMPI, PMIx, GPUDirect RDMA/Storage ([NCCL Env](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fdeeplearning%2Fnccl%2Fuser-guide%2Fdocs%2Fenv.html)) | NVIDIA BCM (`cmsh`), Run:ai (User K8s), Lmod, Apptainer, `aicentre` CLI (Gefion P1) ([P1 CLI](https://www.google.com/search?q=https%3A%2F%2Fhpc.aicentre.dk%2Fcli%2F)) |
+| **Palantir AIP / Foundry** | Python `3.10` (EOL 2026-04-30), `3.11` (EOL 2027-10-31), `3.12` (EOL 2028-10-31); Node.js `18`/`20`/`22`/`24` (`>=18.19.0`); Java 17+ / Amazon Corretto JDK ([Python Versions](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Ftransforms-python%2Fpython-versions%2F), [osdk-ts](https://www.google.com/search?q=https%3A%2F%2Fgithub.com%2Fpalantir%2Fosdk-ts)) | Managed k-LLM Proxy (OpenAI/Anthropic compatible), GPU Compute Modules (`linux/amd64`), Containerized Spark Sidecars ([LLM Proxy](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv3%2Fllm-apis%2Fmodels%2Fopenai-responses-proxy%2F)) | Apache Spark (Velox), Apache Flink, Polars (`@transform_polars`), DuckDB, DataFusion, Arrow Flight SQL (`ArrowFlightJdbcDriver`) ([MMDP](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Farchitecture-center%2Fmultimodal-data-plane%2F)) | Conda + pip (`meta.yaml`), Gradle, Docker/OCI (`--platform linux/amd64`), `foundry-platform-sdk` (`1.112.0`), `@osdk/client`, `@osdk/oauth`, `@osdk/cli`, `foundry` CLI ([Project Structure](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Ftransforms-python%2Fproject-structure%2F)) |
+| **Isambard-AI** | `PrgEnv-cray/8.7.0`, `PrgEnv-gnu`, `cce/21.0.0`, `craype/2.7.36`, `craype-arm-grace`, `nvhpc`, `cray-libsci/26.03.0` (`aarch64` mandatory) ([BriCS MPI](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fmpi%2F)) | `cudatoolkit`, `brics/nccl` (binds `aws-ofi-nccl`), NGC PyTorch `24.12-py3`..`25.05-py3` ([BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F)) | `cray-mpich/9.1.0`, `libfabric/2.3.1` (`craype-network-ofi`), `cray_shasta`/PMI2/PMIx v4 ([BriCS MPI](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fmpi%2F)) | Lmod, Spack, Miniforge/Conda, `uv`, Apptainer (`brics/apptainer-multi-node`), Podman-HPC, SquashFS, `clifton` CLI ([BriCS Podman-HPC](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fcontainers%2Fpodman-hpc%2F)) |
+| **LUMI** | `LUMI/24.03`, `CrayEnv`, `cpeCray`, `cpeGNU`, `cpeAOCC`, `cpeAMD` (`cc`, `CC`, `ftn` Clang/LLVM + Fortran 2018/2023) ([LUMI PrgEnv](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fdevelopment%2Fcompiling%2Fprgenv%2F)) | `rocm` (`gfx90a` MI250X), HIP, OpenMP offload ([LUMI Stacks](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Frunjobs%2Flumi_env%2Fsoftwarestacks%2F)) | `cray-mpich`, `cray-libsci`, `craype-network-ofi` (`libfabric` CXI), RCCL OFI plugin ([LUMI Network](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fhardware%2Fnetwork%2F)) | EasyBuild (`EasyBuild-user` / `eb`), Spack (`spack-cpu`/`gpu`), Singularity CE, `cotainr`, PRoot, `lumio` ([LUMI EasyBuild](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fsoftware%2Finstalling%2Feasybuild%2F)) |
+| **JUPITER** | `Stages/2026`: GCC `14.3.0`, `nvidia-compilers`/NVHPC `25.9`, Python `3.13.5`, EasyBuild `5.1.2` ([JUPITER Stages](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fstages-changelog.html)) | CUDA 12 / 13.0+ driver (explicit `module load CUDA/12` after NVHPC on `Stages/2025`) ([JUPITER Known Issues](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fknown-issues.html)) | `ParaStationMPI` `5.13.0-1`/`5.13.1-1` (`pscom`/UCC), `OpenMPI 5.0.8`, `UCX-settings/{RC,DC,UD}-CUDA`, PMIx ([JUPITER Build-Up](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fbuildup.html)) | Lmod (`/p/software/...`), EasyBuild, Apptainer + `sib` remote build CLI + `shpc` (Conda disabled) ([JUPITER Containers](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fcontainer-runtime.html)) |
+| **El Capitan** | `cce/18.0.0-magic` (`craycc`, `crayCC`, `crayftn`, CPE `24.07`/`25.03`/`25.09`), `rocmcc`, GCC ([LLNL Magic Modules](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fcompilers-and-user-environment%2Fmagic)) | ROCm/HIP (`--offload-arch=gfx942` MI300A), unified HBM3 (`HSA_XNACK=1`) ([LLNL Fortran](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fintroduction-and-quickstart%2Ffortran)) | `cray-mpich` (`-lmpi_gtl_hsa`, `-lxpmem`), `libfabric` CXI, `libpals`/`flux-coral2`, PMIx ([LLNL MPI](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fmpi-overview)) | Lmod (`ml +...`), Spack, Spindle library loader, rootless Podman (`enable-podman`), `slurm2flux` ([LLNL Spindle](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fusing-el-capitan-systems-spindle-and-library)) |
+| **Frontier** | `PrgEnv-amd` (`amdclang`/`amdflang`), `PrgEnv-cray`, `PrgEnv-gnu` (`gcc-native`), `cpe/26.03` ([Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html)) | `rocm/7.0.2` (`hipcc --offload-arch=gfx90a`), `rccl-net-plugin` ([OLCF Software News](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsoftware%2Fsoftware-news.html)) | `cray-mpich` (`>=9.1.0`), `libfabric` CXI, XPMEM, `libpmi`/`libpmi2`/`libpals` ([Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html)) | Lmod, Spack (`/sw/frontier`), Apptainer, Podman-to-Apptainer, `sbcast --send-libs`, `darshan-runtime` ([OLCF Sbcast](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsoftware%2Fpython%2Fsbcast_conda.html)) |
+| **Aurora** | Aurora PE `26.181.0`, Intel oneAPI `2026.1.0` (`icx`/`icpx`/`ifx`, SYCL/DPC++), `spack-pe-gcc`, `spack-pe-oneapi` ([ALCF Aurora PE](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Faurora-pe%2F)) | Intel Level Zero (`ze_*`), Agama `1146.78` / LTS `2523.78`, `frameworks/2026.1.0` (PyTorch `2.13`, vLLM `0.26.1`) ([ALCF Updates](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fsystem-updates%2F)) | Aurora MPICH (Cray PALS, ROMIO DAOS), oneCCL, `libfabric` CXI, PMIx, `libdaos`/`libpil4dfs.so`/`libioil.so` ([ALCF DAOS](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fdata-management%2Fdaos%2Fdaos-overview%2F)) | Hierarchical Lmod (`/opt/aurora` squashfs + `/soft/modulefiles`), Spack PE (RPATH), Apptainer, Copper cache, `dbcast` ([ALCF Spack PE](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fapplications-and-libraries%2Flibraries%2Fspack-pe%2F)) |
+| **BerzeLiUs** | `buildenv-gcccuda/12.1.1-gcc12.3.0` (GCC 12.3.0, CUDA 12.1.1, OpenMPI 4.1.5, OpenBLAS 0.3.23); `11.8.0-gcc11.3.0` ([NSC Getting Started](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-getting-started%2F)) | NVIDIA Driver `580.105.08` (CUDA 13.0) on Ampere & Hopper compute nodes ([NSC Compute Guide](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-gpu%2F)) | OpenMPI `4.1.x`, PMI2/PMIx (`pmix_v3`), NCCL, HDR InfiniBand RDMA, `mpprun` ([NSC Compute Guide](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-gpu%2F)) | Lmod (`/software`), `Miniforge3/24.7.1-2-hpc1-bdist` (Mamba), Apptainer (Docker forbidden), `Fpart/1.5.1` ([NSC Apptainer](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-software%2Fberzelius-apptainer%2F)) |
+
+### 1.3 Component Interaction Schemas
+
+#### A. Sovereign & Exascale HPC Control, Compute, and Storage Dataflow
+
+```text
++-----------------------------------------------------------------------------------+
+|  EXTERNAL AUTH & ACCESS PLANE                                                     |
+|  SSHv2 (Port 22) + MFA/Certs:                                                     |
+|   - Isambard-AI: OIDC (MyAccessID) -> clifton (12h Conch CA) -> jump.isambard     |
+|   - JUPITER: Ed25519 + JuDoor from= IP + RFC 6238 TOTP -> login.jupiter           |
+|   - El Capitan / Frontier / Aurora: RSA SecurID / MobilePASS+ -> Login Enclaves   |
+|   - BerzeLiUs / Gefion / Sferical One: SUPR+TOTP / DCAI+IP Whitelist / Consortium |
++----------------------------------------+------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|  SCHEDULER & RESOURCE CONTROL PLANE                                               |
+|   - Slurm: slurmctld (:6817) <-> slurmdbd (:6819) <-> slurmrestd (:6820)          |
+|   - JUPITER: slurmctld <-> ParTec ParaStation psid + psslurm (replaces slurmd)    |
+|   - El Capitan: flux-broker (ZeroMQ CURVE + TOML) <-> Fluxion <-> flux-coral2 DWS |
+|   - Aurora: pbs_server (:15001) <-> pbs_comm (:17001) <-> pbs_mom (:15002) + PALS |
+|   - DGX SuperPOD: NVIDIA Mission Control / BCM CMDaemon (:8081) + UFM + NetQ      |
++----------------------------------------+------------------------------------------+
+                                         | (cgroups v2 / namespaces / MIG / core spec)
+                                         v
++-----------------------------------------------------------------------------------+
+|  HIGH-SPEED COMPUTE & COLLECTIVE FABRIC                                           |
+|   [Compute Nodes: GH200 / B300 NVL72 / H100 / H200 / MI300A / MI250X / PVC 1550]  |
+|        |                                   |                                      |
+|   Intra-Node: NVLink 4/5 / NVLink-C2C      Inter-Node:                            |
+|               Infinity Fabric / Xe Link     - Quantum-X800 (800G) / NDR200 / HDR  |
+|               XPMEM (-lxpmem)               - HPE Slingshot-11 (200G Dragonfly)   |
+|        |                                   |                                      |
+|   MPI / Collective Stack: Cray MPICH / ParaStationMPI / OpenMPI / NCCL / RCCL /   |
+|                           oneCCL -> libfabric CXI (aws-ofi-nccl) or UCX (RC/DC)   |
++----------------------------------------+------------------------------------------+
+                                         | (GPUDirect Storage / RDMA / NVMe-oF / DFUSE)
+                                         v
++-----------------------------------------------------------------------------------+
+|  MULTI-TIER PARALLEL & OBJECT STORAGE PLANE                                       |
+|   - Node-Local NVMe / Near-Node Flash: /scratch/local, /mnt/bb, /l/ssd, Rabbit    |
+|   - Parallel POSIX: Lustre (Orion 679PB, ClusterStor, LUMI-P/F, Flare 91PB,       |
+|     DDN EXAScaler), GPFS (EXAJUST), VAST Data NVMe-oF, WEKA (110PB), DAOS (230PB) |
+|   - Object & Archive: LUMI-O Ceph S3 (30PB), Kronos Tape, EXAJUST $ARCHIVE        |
++-----------------------------------------------------------------------------------+
+```
+
+#### B. Palantir Foundry & AIP Zero-Trust Microservice Architecture
+
+```text
++-----------------------------------------------------------------------------------+
+|  CLIENT & EXTERNAL INTEGRATION PLANE (TLS 1.2/1.3, Port 443)                      |
+|   - REST API v2/v3 JSON (OAuth 2.0 Auth Code+PKCE / Client Credentials / Bearer)  |
+|   - TypeScript/Python/Java OSDK (@osdk/client, foundry-platform-sdk) + WebSockets |
+|   - Arrow Flight SQL gRPC (jdbc:arrow-flight-sql://<host>:443)                    |
+|   - S3-Compatible Path-Style API (https://<host>/io/s3/<dataset-rid>/<path>)      |
+|   - Data Connection Agent (magritte-bootvisor, truststore.jks, runtime.yml)       |
++----------------------------------------+------------------------------------------+
+                                         |
+                                         v
++-----------------------------------------------------------------------------------+
+|  PALANTIR RUBIX ZERO-TRUST KUBERNETES SUBSTRATE (48h Node TTL / 72h Container TTL)|
+|  Orchestrated by Palantir Apollo (Zero-Downtime CD & Marketplace Product Releases)|
+|                                                                                   |
+|   +-------------------------------+     +--------------------------------------+  |
+|   | MULTIMODAL DATA PLANE (MMDP)  |     | ONTOLOGY BACKEND MICROSERVICES       |  |
+|   | - Datasets (Branch/Tx ACID)   | --> | - OMS (Metadata: Objects/Links/Acts) |  |
+|   | - Apache Iceberg & BYOB       |     | - Funnel (Batch/Stream Indexer)      |  |
+|   | - Virtual Tables (Pushdown)   |     | - Object Storage v2 (OSv2)           |  |
+|   | - Media Sets (Binary/DICOM)   |     | - Object Set Service (OSS / Spark)   |  |
+|   | - Spark+Velox / Flink / Polars|     | - Actions & Functions on Objects     |  |
+|   +---------------+---------------+     +------------------+-------------------+  |
+|                   |                                        |                      |
+|                   +-------------------+--------------------+                      |
+|                                       v                                           |
+|   +----------------------------------------------------------------------------+  |
+|   | AIP & COMPUTE MODULES EXECUTION PLANE                                      |  |
+|   | - k-LLM Proxy (/api/v2/llm/proxy/{openai,anthropic}/..., ZDR enforced)     |  |
+|   | - AIP Logic / AIP Agent Studio (streamingContinue) / AIP Evals             |  |
+|   | - Compute Modules (linux/amd64, non-root UID) <==HTTPS :8945==> Sidecar    |  |
+|   +----------------------------------------------------------------------------+  |
+|                                       |                                           |
+|                                       v                                           |
+|   [Governance & Observability: RBAC + Orgs + Markings + CBAC | audit.3 + SLS JSON]|
++-----------------------------------------------------------------------------------+
+```
+
+---
+
+## 2. Installation, Deployment, and Lifecycle
+
+### 2.1 Installation and Provisioning Methods
+
+* **Sferical One & Gefion (NVIDIA DGX SuperPOD)**: Bare-metal OS images, firmware, and Shorewall firewall roles are provisioned via **NVIDIA Base Command Manager (BCM)** (`cmsh`) and **NVIDIA Mission Control** (`2.2.0`); Kubernetes AI workloads run on dedicated User Kubernetes Nodes via **NVIDIA Run:ai** ([NVIDIA Mission Control 2.2.0](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fmission-control%2Fdocs%2Fsystems-administration-guide%2F2.2.0%2Foverview.html), [NVIDIA BCM Third Party](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fbase-command-manager%2Fproduct-manuals%2Finstallation%2Fthirdparty)). Gefion P1 sandbox onboarding uses the `aicentre` CLI ([P1 CLI Docs](https://www.google.com/search?q=https%3A%2F%2Fhpc.aicentre.dk%2Fcli%2F)).
+* **Palantir AIP / Foundry**: Platform services are deployed and continuously upgraded via **Palantir Apollo** on Rubix across AWS, Azure, GCP, Oracle Cloud, or air-gapped on-premises clusters ([The Rubix Substrate](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Farchitecture-center%2Frubix%2F)). Client SDKs and CLIs install via:
+  ```bash
+  # Python Platform SDK (Apache-2.0, v1.112.0)
+  pip install foundry-platform-sdk
+
+  # Python Ontology SDK (OSDK)
+  pip install <PACKAGE> --upgrade --extra-index-url "<INDEX-URL>"
+
+  # TypeScript OSDK
+  npm install @osdk/client @osdk/oauth
+  npx @osdk/create-app
+
+  # Foundry CLI (SuperRepo Beta - direct enrollment script)
+  curl -sS "$FOUNDRY_URL/code/api/extension/install-script" \
+    -H "Authorization: Bearer $TOKEN" | bash
+
+  # Compute Module OCI Build (linux/amd64 required)
+  docker build . -t <image>:<tag> --platform linux/amd64
+  ```
+  ([foundry-platform-python](https://www.google.com/search?q=https%3A%2F%2Fgithub.com%2Fpalantir%2Ffoundry-platform-python), [Python OSDK](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fontology-sdk%2Fpython-osdk%2F), [osdk-ts](https://www.google.com/search?q=https%3A%2F%2Fgithub.com%2Fpalantir%2Fosdk-ts), [Foundry CLI](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fsuperrepo%2Ffoundry-cli%2F), [Compute Modules Containers](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fcompute-modules%2Fcontainers%2F)).
+* **Isambard-AI**: Client SSH certificate CLI `clifton` installs via WinGet or `mise use -g ubi:isambard-sc/clifton` ([BriCS Login](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Flogin%2F)). User software deploys via Lmod, Spack, Miniforge/`uv`, Apptainer (`apptainer build --fakeroot`), Podman-HPC (`podman-hpc`), and SquashFS archives ([BriCS Intro Tour](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Ftutorials%2Fintro-tour%2F)).
+* **LUMI**: Software builds via EasyBuild (`module load EasyBuild-user` with `EBU_USER_PREFIX`), Spack (`spack-cpu`/`spack-gpu`), Singularity CE, `cotainr` (`cotainr build app.sif --system=lumi-g --conda-env=env.yml`), and unprivileged PRoot; direct Conda/pip installs on Lustre are discouraged ([LUMI EasyBuild](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fsoftware%2Finstalling%2Feasybuild%2F), [LUMI Singularity](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fsoftware%2Fcontainers%2Fsingularity%2F)).
+* **JUPITER**: System software is versioned in EasyBuild stages (`Stages/2026`; older stages via `ml use $OTHERSTAGES`). Containers run via Apptainer built remotely via the JSC Container Build System (`sib` CLI) or `module load shpc`; Conda is disabled on HPC systems ([JUPITER Container Runtime](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fcontainer-runtime.html)).
+* **El Capitan, Frontier, Aurora & BerzeLiUs**: Software stacks deploy via Lmod and Spack (`/sw/frontier` on Frontier, `/opt/aurora/<VERSION>/spack` RPATH on Aurora, `/software` on BerzeLiUs). Containers use rootless Podman initialized with `enable-podman` (El Capitan), Apptainer (Frontier, Aurora, BerzeLiUs — Docker is strictly prohibited on BerzeLiUs), `sbcast --send-libs` (Frontier), and Copper read-only cache (Aurora) ([LLNL Containers](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-containers-lc-hpc-systems%2Fcontainers-gotchas), [NSC Apptainer](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-software%2Fberzelius-apptainer%2F), [ALCF Aurora PE](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Faurora-pe%2F)).
+
+### 2.2 Post-Installation Filesystem Structure and Quotas
+
+| System | Binaries & Modules | Configuration & Secrets | Logs & Telemetry | Persistent Home / Project Storage | High-Speed Scratch / Local / Object Storage |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sferical One** ([DGX GB300 RA](https://docs.nvidia.com/pdf/dgx-spod-gb300-ra.pdf)) | BCM head-node modules; 1.92 TB M.2 OS NVMe/tray | `/etc/slurm/{slurm,gres,cgroup}.conf`; `/root/.cm/admin.{pem,key}` | Prometheus (`:9090`), DCGM (`:9400`), Slurm accounting DB | Certified DGX Storage over SN5600 + NFS home | 4x 3.84 TB E1.S NVMe RAID0 (15.36 TB/tray local scratch) |
+| **Palantir AIP / Foundry** ([Project Structure](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Ftransforms-python%2Fproject-structure%2F), [Agent Config](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fdata-connection%2Fagent-configuration-reference%2F)) | `transforms-python/src/myproject/datasets/`; `dist/.palantir/widgets.config.json`; `./service/bin/{init.sh,auto_restart.sh}` | `conda_recipe/meta.yaml`, `build.gradle`, `foundry.config.json`, `var/conf/runtime.yml`, `/var/security/truststore.jks`, `/etc/ssl/rubix-ca/ca.pem`, `/opt/module-auth-token/MODULE_AUTH_TOKEN`, `/opt/build2-token/BUILD2_TOKEN` | Audit Explorer (`audit.3` Iceberg), SLS JSON stdout (`type: service.1`), Control Panel Log Observability | Versioned Foundry Datasets (Parquet/Iceberg), OSv2, Media Sets, `/var/data/source-encryption-key` | `/var/data/{cache,maven,processes}`, `/backups`; Compute Module ephemeral container FS (72h TTL) |
+| **Gefion** ([P1 Gefion](https://hpc.aicentre.dk/providers/gefion/)) | DGX OS + BCM modules + W&B (Gefion AI Cloud) | `~/.ssh/config` (managed by `aicentre`), internal BCM/Slurm configs | Slurm `sacct`, DCGM (`:9400`), `aicentre check --verbose` | P1 `$HOME`: 25 GB; Project: 500 GB default (300 TB pool); 6-mo retention | DDN EXAScaler Lustre (12x NV400X2) + 110 PB WEKA NVMe; `xfer.dcai.dk` SFTP staging (counts 2x quota) |
+| **Isambard-AI** ([BriCS Storage](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Finformation%2Fsystem-storage%2F)) | `/opt/cray/libfabric/1.22.0`, `/usr/lib64`, Lmod/Spack | `~/.ssh/config`, `~/.ssh/id_ed25519-cert.pub` | Slurm `%x-%j.{out,err}`, `sacct`, `cxi_stat` | `$HOME` `/home/<P>/<U>.<P>` (`0750`, 100 GiB NFS P2); `$PROJECTDIR` `/projects/<P>` (`2770`, 200 TiB / 50M inodes) | `$SCRATCHDIR` `/scratch/<P>/<U>.<P>` (`0750`, 5 TiB / 1M inodes); `$LOCALDIR` `/local/user/<UID>` (48 GiB tmpfs compute / 512 GiB SSD login) |
+| **LUMI** ([LUMI Storage](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fstorage%2F)) | `/appl` / Lmod (`LUMI/24.03`, `CrayEnv`), `$EBU_USER_PREFIX` | `~/.config/rclone/rclone.conf`, `~/.s3cfg`, `~/.aws/credentials`, `~/.cache/lmod` | Slurm `sacct`, CrayPat `pat_report` | `/users/<U>` (20 GB / 100k); `/project/project_<id>` (50-500 GB / 100k, 1x billing) | `/scratch/project_<id>` (50-500 TB / 2M); `/flash/project_<id>` (2-100 TB / 1M, 3x); LUMI-O (150 TB-2.1 PB, 0.25x); `/tmp` RAM on compute |
+| **JUPITER** ([JUPITER Filesystems](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Ffilesystems.html)) | `/p/software/...` (Lmod EasyBuild `Stages/2026`) | `~/.ssh/config`, `~/.config/sib/data.json`, JuDoor `authorized_keys` | LLview portal, `sacct` (1y retention), `jpwr` | `$HOME` (20/22 GB, 1M blk, `0700`); `$PROJECT` (20/22 TB, 4M blk, `2770`); `$DATA` (21 PB); `$ARCHIVE` (2.8 PB `/p/arch{1,2}`) | `$SCRATCH` (200/210 TB, 8M blk, 90d purge); `$FSCRATCH` (40/44 TB flash, 30d purge); `/tmp` & `/dev/shm` tmpfs |
+| **El Capitan** ([LLNL Rabbits](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Ffile-systems-rabbits)) | Lmod (`cce/18.0.0-magic`), Spack, Spindle | `/etc/flux/{system,security,imp}/conf.d/*.toml`, `~/.config/containers/storage.conf` | `flux dmesg`, `exec.eventlog`, LDMS Kafka -> Sonar | `/usr/workspace/<user>` (2 TB NFS + `.snapshot`) | `/p/lustre4` (100 TB/10M T1; 500 TB/100M T2); `/l/ssd` (~200 GB static Rabbit XFS); dynamic `$DW_*` Rabbit; `/var/tmp` |
+| **Frontier** ([Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html)) | `/sw/frontier`, Lmod (`PrgEnv-*`, `cpe/26.03`, `rocm/7.0.2`) | Slurm `slurm.conf`/`gres.conf`/`cgroup.conf` | `/lustre/orion/darshan/<sys>/<y>/<m>/<d>`, `sacct`, Omnistat | `/ccs/home/<U>` (50 GB NFS); `/ccs/proj/<P>` (50 GB NFS); `/nl/kronos/olcf/<P>` (200 TB archive) | `/lustre/orion/<P>/scratch/<U>` (`$MEMBERWORK`, 50 TB, 90d purge); `/mnt/bb/<U>` (2x 1.92 TB NVMe via `-C nvme`) |
+| **Aurora** ([ALCF Getting Started](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fgetting-started-on-aurora%2F)) | `/opt/aurora` (squashfs PE), `/soft`, `/soft/daos/bin` | `/etc/daos/daos_{server,agent,control}.yml`, `/etc/daos/certs/` | `$PBS_HOME/mom_logs/YYYYMMDD`, `D_LOG_FILE`, Darshan 3.5.0 | `/home/<U>` (`/lus/gecko/home`, 50 GB); `/lus/flare/projects/<P>` (91 PB Lustre, 1 TB default) | DAOS `dfuse` `/tmp/$USER/$DAOS_POOL/$DAOS_CONT` (auto-unmounted by PBS epilogue); Copper `/tmp/$USER/copper/` |
+| **BerzeLiUs** ([NSC Getting Started](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-getting-started%2F)) | `/software` (Lmod, `Miniforge3`, `buildenv-gcccuda`) | Slurm configs, Apptainer `.def`/`.sif` (store in `/proj`, never `/home`) | `jobgraph -j <id>` (`.png`), `sacct`, `nscquota` | `/home/$USER` (20 GB / 1M files, nightly backup); `/proj/<P>/users/$USER` (2 TB / 2M); `/proj/common-datasets` | `/scratch/local` (15 TB thin / 30 TB fat & H200 / 6.4 TB CPU; isolated & wiped per job) |
+
+### 2.3 Process and Job Lifecycle Management
+
+* **Slurm Systems (Sferical One, Gefion, Isambard-AI, LUMI, JUPITER, Frontier, BerzeLiUs)**: Submission via `sbatch` / `salloc` / `interactive` (BerzeLiUs), parallel step execution via `srun` (mandatory on JUPITER where `psslurm` replaces `slurmd` and `mpiexec` is unsupported), queue inspection via `squeue` / `sinfo`, control via `scancel` / `scontrol`, accounting via `sacct` / `sstat`, and live compute attachment via `jobsh -j <id>` (BerzeLiUs), `sgoto <jobid> <node>` (JUPITER), or `srun --jobid` (Isambard-AI) ([JUPITER Batch System](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fbatchsystem.html), [NSC Running Applications](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Frunning-applications%2F)).
+* **Flux Framework (El Capitan)**: Hierarchical subinstance scheduling via `flux batch`, interactive allocations via `flux alloc`, blocking parallel launch via `flux run`, asynchronous submission via `flux submit`, queue inspection via `flux jobs -A`, live attach via `flux job attach -E -X <jobid>`, modification via `flux update <jobid> duration=...` / `flux urgency`, and termination via `flux cancel <jobid>` ([LLNL Flux Quick Start](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fbanks-jobs%2Frunning-jobs%2Fflux-quick-start-guide)).
+* **PBS Pro + Cray PALS (Aurora)**: Submission via `qsub` (`-I` interactive), status via `qstat -xfw <jobid>` / `pbsnodes -avF JSON`, control via `qdel` / `qrls` / `qmove`, and parallel MPI execution via Cray PALS `mpiexec` ([ALCF Running Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Frunning-jobs-aurora%2F)).
+* **Palantir Foundry / AIP**: Orchestrated via Foundry Builds (`RUNNING`, `SUCCEEDED`, `FAILED`, `CANCELED` with `retryCount`, `retryBackoffDuration`, `abortOnFailure`, `fallbackBranches`), Schedules, Code Repository PR CI Checks, Apollo rolling releases, and Data Connection Agent host daemon scripts (`./service/bin/init.sh start|stop|status`, `./service/bin/auto_restart.sh clear`) ([Create Build (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Forchestration-v2-resources%2Fbuilds%2Fcreate-build%2F), [Agent Config](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fdata-connection%2Fagent-configuration-reference%2F)).
+
+---
+
+## 3. Configuration and Launch Parameters
+
+### 3.1 Complete Configuration File Reference (`03_configuration_files_schemas.csv`)
+
+#### Slurm Core (`slurm.conf`, `gres.conf`, `cgroup.conf` — DGX SuperPOD / Frontier / Isambard-AI / LUMI / BerzeLiUs)
+
+```ini
+# /etc/slurm/slurm.conf (DGX SuperPOD / Slurm reference)
+GresTypes=gpu
+SelectType=select/cons_tres
+AuthType=auth/munge
+AuthAltTypes=auth/jwt
+AccountingStorageType=accounting_storage/slurmdbd
+SlurmctldPort=6817
+SlurmdPort=6818
+BatchStartTimeout=10
+CompleteWait=0
+SlurmdParameters=numa_node_as_socket
+
+# /etc/slurm/gres.conf
+AutoDetect=nvml        # NVIDIA GPUs (use AutoDetect=rsmi on AMD ROCm systems like Frontier)
+
+# /etc/slurm/cgroup.conf
+CgroupPlugin=cgroup/v2
+ConstrainDevices=yes
+ConstrainSwapSpace=yes
+AllowedRAMSpace=100
+MinRAMSpace=30
+SignalChildrenProcesses=yes
+EnableExtraControllers=io,pids,rdma,hugetlb
+```
+([Slurm slurm.conf](https://www.google.com/search?q=https%3A%2F%2Fslurm.schedmd.com%2Fslurm.conf.html), [Slurm gres.conf](https://www.google.com/search?q=https%3A%2F%2Fslurm.schedmd.com%2Fgres.conf.html), [Slurm cgroup.conf](https://www.google.com/search?q=https%3A%2F%2Fslurm.schedmd.com%2Fcgroup.conf.html)).
+
+#### Flux Broker TOML & Rabbit DataWorkflow Directives (El Capitan)
+
+```toml
+# /etc/flux/system/conf.d/bootstrap.toml & resource.toml
+[bootstrap]
+curve_cert = "/etc/flux/system/curve.cert"
+
+[resource]
+path = "/etc/flux/system/R" # RFC 20 JSON resource graph
+```
+
+```bash
+# Embedded in Flux batch script for Rabbit NNF allocation (validated against DWS v1alpha2 CRDs)
+#flux: -N 16
+#flux: -q pbatch
+#flux: -t 4h
+#DW jobdw capacity=200GiB type=xfs name=job_local_scratch
+#DW jobdw capacity=10TiB type=lustre name=job_striped_lustre
+```
+([flux-config(5)](https://www.google.com/search?q=https%3A%2F%2Fflux-framework.readthedocs.io%2Fprojects%2Fflux-core%2Fen%2Fstable%2Fman5%2Fflux-config.html), [NNF Directive Breakdown](https://www.google.com/search?q=https%3A%2F%2Fnearnodeflash.github.io%2Fdev%2Fguides%2Fdirective-breakdown%2Freadme%2F)).
+
+#### DAOS YAML & PBS Pro Directives (Aurora)
+
+```yaml
+# /etc/daos/daos_agent.yml
+access_points: ['daos-mgmt-01:10001']
+log_file: /var/log/daos/daos_agent.log
+transport_config:
+  allow_insecure: false
+  client_cert_dir: /etc/daos/certs/clients
+```
+
+```bash
+#PBS -A <project_allocation>
+#PBS -N aurora_job
+#PBS -q prod
+#PBS -l select=256
+#PBS -l walltime=12:00:00
+#PBS -l filesystems=flare:daos_user_fs
+#PBS -l place=scatter:group=tier0
+#PBS -k doe
+```
+([DAOS Deployment](https://www.google.com/search?q=https%3A%2F%2Fdocs.daos.io%2Flatest%2Fadmin%2Fdeployment%2F), [ALCF Running Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Frunning-jobs-aurora%2F)).
+
+#### JUPITER PrEpS `#SBATCH --comment` & JuDoor OpenSSH Config
+
+```bash
+# JUPITER Slurm Prolog/Epilog runtime tuning
+#SBATCH --comment="THP=never;CPU_POWER_CAP=200000000;NVIDIA_GPU_CLOCKS=990;NVIDIA_POWER_LIMIT=680,680"
+```
+
+```text
+# JuDoor authorized_keys (mandatory IP/CIDR prefix, netmask >= 8, no trailing wildcard)
+from="2001:db8::2a,192.51.100.0/24,*.fz-juelich.de" ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAA...
+
+# ~/.ssh/config (JUPITER TOTP MFA multiplexing; ForwardAgent No enforced server-side)
+Host jupiter
+  HostName login.jupiter.fz-juelich.de
+  User <userid>
+  ControlMaster auto
+  ControlPath ~/.ssh/control-%h-%p-%r
+  ControlPersist 8h
+```
+([JUPITER Build-Up](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fbuildup.html), [JUPITER Access](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Faccess.html)).
+
+#### Palantir Foundry Configuration Files (`meta.yaml`, `foundry.config.json`, `Dockerfile`, `runtime.yml`)
+
+```yaml
+# transforms-python/conda_recipe/meta.yaml (build/run Python versions must match; no >= ranges)
+package:
+  name: "{{ PACKAGE_NAME }}"
+  version: "{{ PACKAGE_VERSION }}"
+source:
+  path: ../src
+requirements:
+  build:
+    - python 3.12
+    - setuptools
+  run:
+    - python 3.12
+    - transforms
+    - scipy <=1.4.0
+build:
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+```
+
+```json
+// foundry.config.json (OSDK hosted website & widget versioning)
+{
+  "foundryUrl": "https://{{FOUNDRY_HOSTNAME}}",
+  "site": {
+    "application": "{{APPLICATION_RID}}",
+    "directory": "./dist",
+    "uploadOnly": true
+  },
+  "widgetSet": {
+    "autoVersion": "package-json"
+  }
+}
+```
+
+```dockerfile
+# Compute Module Dockerfile (linux/amd64, non-root numeric UID, no :latest, no ports 8945/8946)
+FROM python:3.12.7-slim
+USER 5001
+EXPOSE 8080
+ENTRYPOINT ["python3", "/app/worker.py"]
+```
+
+```yaml
+# Data Connection Agent: <install-dir>/var/conf/runtime.yml
+service-discovery:
+  services:
+    magritte-coordinator:
+      proxy-configuration:
+        hostAndPort: "proxy.corp.internal:3128"
+```
+([Project Structure](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Ftransforms-python%2Fproject-structure%2F), [Host OSDK App](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fdeveloper-console%2Fdeploy-custom-application-on-foundry%2F), [Compute Modules Containers](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fcompute-modules%2Fcontainers%2F), [Agent Config](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fdata-connection%2Fagent-configuration-reference%2F)).
+
+### 3.2 Complete Table of Supported Environment Variables (`04_environment_variables.csv`)
+
+| System Scope | Variable | Default / Example Value | Functional Effect & Constraints | Source |
+| :--- | :--- | :--- | :--- | :--- |
+| NVIDIA Clusters | `CUDA_VISIBLE_DEVICES` | All GPUs / Slurm-assigned ordinals or MIG UUIDs | Restricts visible CUDA devices; automatically exported by Slurm GRES | [CUDA Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fcuda%2Fcuda-programming-guide%2F05-appendices%2Fenvironment-variables.html) |
+| NVIDIA Clusters | `CUDA_DEVICE_ORDER` | `FASTEST_FIRST` (set `PCI_BUS_ID`) | Aligns CUDA device ordering with NVML / Slurm PCI bus indices | [CUDA Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fcuda%2Fcuda-programming-guide%2F05-appendices%2Fenvironment-variables.html) |
+| NVIDIA Clusters | `CUDA_LAUNCH_BLOCKING` | `0` (set `1` for debugging) | Forces synchronous kernel launches to pinpoint exact failing kernel | [CUDA Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fcuda%2Fcuda-programming-guide%2F05-appendices%2Fenvironment-variables.html) |
+| NVIDIA Clusters | `CUDA_CACHE_MAXSIZE` | `1073741824` (1 GiB) | Maximum PTX-to-SASS JIT disk cache size in bytes | [CUDA Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fcuda%2Fcuda-programming-guide%2F05-appendices%2Fenvironment-variables.html) |
+| NVIDIA Clusters | `NCCL_DEBUG` | `WARN` (`VERSION`/`INFO`/`TRACE`) | Sets NCCL logging verbosity (pair with `NCCL_DEBUG_SUBSYS=INIT,NET`) | [NCCL Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fdeeplearning%2Fnccl%2Fuser-guide%2Fdocs%2Fenv.html) |
+| NVIDIA Clusters | `NCCL_SOCKET_IFNAME` | Excludes `lo`/`docker*` (`hsn` on Isambard-AI) | Selects NCCL control-plane network interface prefix | [BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F) |
+| IB NVIDIA Clusters | `NCCL_IB_HCA` | Auto (e.g., `mlx5_0:1,mlx5_1:1`) | Pins InfiniBand HCA interfaces and ports for NCCL RDMA | [NCCL Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fdeeplearning%2Fnccl%2Fuser-guide%2Fdocs%2Fenv.html) |
+| IB NVIDIA Clusters | `NCCL_NET_GDR_READ` | `1` (NVLink platforms) | Enables GPUDirect RDMA reads directly from GPU HBM | [NCCL Env Vars](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fdeeplearning%2Fnccl%2Fuser-guide%2Fdocs%2Fenv.html) |
+| Isambard-AI | `NCCL_NET` | `AWS Libfabric` (`brics/nccl`) | Routes NCCL collectives through `aws-ofi-nccl` over Slingshot-11 CXI | [BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F) |
+| Isambard-AI | `NCCL_NET_GDR_LEVEL` | `PHB` (`NCCL_CROSS_NIC=1`, `NCCL_GDRCOPY_ENABLE=1`) | Enables PCIe Host Bridge GPUDirect RDMA across GH200 Cassini NICs | [BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F) |
+| Slingshot-11 Systems | `FI_CXI_RDZV_PROTO` | `alt_read` (Isambard-AI / Frontier RCCL) | Selects alternative CXI rendezvous protocol; pair with `--network=disable_rdzv_get` | [OLCF PyTorch](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsoftware%2Fanalytics%2Fpytorch_frontier.html) |
+| Slingshot-11 Systems | `FI_CXI_DEFAULT_CQ_SIZE` | `131072` (`FI_CXI_DEFAULT_TX_SIZE=2048`) | Sets libfabric CXI completion queue depth to prevent overflow at scale | [BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F) |
+| Slingshot-11 Systems | `FI_CXI_RX_MATCH_MODE` | `hybrid` (or `hardware`/`software`) | Controls Cassini RX tag matching to avoid hardware matching overflow | [fi\_cxi(7)](https://www.google.com/search?q=https%3A%2F%2Fofiwg.github.io%2Flibfabric%2Fmain%2Fman%2Ffi_cxi.7.html) |
+| Cray MPICH Systems | `MPICH_GPU_SUPPORT_ENABLED` | `1` | Enables GPU-aware Cray MPICH; required on El Capitan to prevent `Bad address` | [LLNL MPI](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fmpi-overview) |
+| AMD ROCm Systems | `ROCR_VISIBLE_DEVICES` | `$SLURM_LOCALID` (`0-7` MI250X / `0-3` MI300A) | Isolates visible AMD GCD/APU ordinals per MPI rank | [LUMI-G Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Frunjobs%2Fscheduled-jobs%2Flumig-job%2F) |
+| El Capitan / Frontier | `HSA_ENABLE_SDMA` | `1` (`0` = GFX blit kernel fallback) | Controls ROCr System DMA engines for host-device/P2P transfers | [ROCR Env Vars](https://www.google.com/search?q=https%3A%2F%2Frocm.docs.amd.com%2Fprojects%2FROCR-Runtime%2Fen%2Flatest%2Fapi-reference%2Fenvironment_variables.html) |
+| El Capitan | `HSA_XNACK` | `1` (`HUGETLB_MORECORE=yes`) | Enables page-fault-driven unified memory and 2 MB hugepages on MI300A | [LLNL Pro Tips](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fintroduction-and-quickstart%2Fpro-tips) |
+| El Capitan | `MPIBIND_RESTRICT` | `1-7,9-15,...,185-191` (84 user cores) | Isolates user processes from the 12 OS/Lustre cores per MI300A node | [LLNL Pro Tips](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Fdocumentation%2Fuser-guides%2Fusing-el-capitan-systems%2Fintroduction-and-quickstart%2Fpro-tips) |
+| El Capitan | `FLUX_URI` | `local:///run/flux/local` | Enclosing Flux rank-0 broker URI read by `flux_open(3)` | [flux-uri(1)](https://www.google.com/search?q=https%3A%2F%2Fflux-framework.readthedocs.io%2Fprojects%2Fflux-core%2Fen%2Fstable%2Fman1%2Fflux-uri.html) |
+| Frontier | `MPICH_OFI_NIC_POLICY` | `NUMA` (default) | Confines MPI rank-to-Slingshot NIC mapping to local NUMA domain | [Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html) |
+| Frontier | `GTL_ENABLE_HSA_IPC_SIGNAL_CACHE` | `1` (`HSA_ENABLE_IPC_MODE_LEGACY=1`) | Caches HSA IPC signals for GPU-aware Cray MPICH (`>=9.1.0`) | [Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html) |
+| LUMI | `PMI_NO_PREINITIALIZE` / `PMI_SHARED_SECRET` | `y` / `""` | Workarounds for >=512-node Fortran MPI startup hangs and `_pmi_set_af_in_use` | [LUMI Known Issues](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fhelpdesk%2Fissues%2F) |
+| LUMI | `EBU_USER_PREFIX` | `/project/project_<id>/EasyBuild` | Target install prefix for `EasyBuild-user` modules | [LUMI EasyBuild](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Fsoftware%2Finstalling%2Feasybuild%2F) |
+| JUPITER | `PSP_UCC` / `PSP_ONDEMAND` | `1` / `1` | Switches ParaStationMPI collectives to UCC (fixes `MPI_File_open` hang); enables on-demand IB QPs | [JUPITER Known Issues](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fknown-issues.html) |
+| JUPITER | `UCX_TLS` / `UCX_PROTO_ENABLE` | `RC-CUDA`/`DC-CUDA`/`UD-CUDA`; `no` (>200 nodes) | Selects UCX InfiniBand transport and disables UCX v2 protocol at scale | [JUPITER Build-Up](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Fbuildup.html) |
+| Aurora | `ZE_AFFINITY_MASK` | `0.0` (tile) or `0,1` (device) | Pins Intel Level Zero PVC GPU devices/tiles per MPI rank | [ALCF Running Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Frunning-jobs-aurora%2F) |
+| Aurora | `ZE_FLAT_DEVICE_HIERARCHY` | `COMPOSITE` (Aurora PE) / `FLAT` (`frameworks`) | Exposes PVC GPUs as 6x2 composite sub-devices or 12 flat devices | [Intel GPU Guide](https://www.google.com/search?q=https%3A%2F%2Fwww.intel.com%2Fcontent%2Fwww%2Fus%2Fen%2Fdocs%2Foneapi%2Foptimization-guide-gpu%2F2025-2%2Fexposing-the-device-hierarchy.html) |
+| Aurora | `ONEAPI_DEVICE_SELECTOR` | `level_zero:gpu` | Filters SYCL/OpenMP runtime backend and device class | [Intel Device Selection](https://www.google.com/search?q=https%3A%2F%2Fwww.intel.com%2Fcontent%2Fwww%2Fus%2Fen%2Fdocs%2Foneapi%2Fprogramming-guide%2F2025-1%2Fdevice-selection.html) |
+| Aurora | `SYCL_PI_LEVEL_ZERO_USE_IMMEDIATE_COMMANDLISTS` | `1` | Activates low-latency Level Zero immediate command lists | [Intel Immediate Lists](https://www.google.com/search?q=https%3A%2F%2Fwww.intel.com%2Fcontent%2Fwww%2Fus%2Fen%2Fdeveloper%2Farticles%2Fguide%2Flevel-zero-immediate-command-lists.html) |
+| Aurora | `MPIR_CVAR_ENABLE_GPU` | `1` (`0` for CPU-only) | Enables GPU-aware Aurora MPICH over Level Zero and Slingshot-11 | [ALCF Running Jobs](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Frunning-jobs-aurora%2F) |
+| Aurora | `LD_PRELOAD` (DAOS) | `/usr/lib64/libpil4dfs.so` (or `libioil.so`) | Intercepts POSIX data+metadata (`libpil4dfs`) or data-only (`libioil`) into DAOS DFS | [ALCF DAOS](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fdata-management%2Fdaos%2Fdaos-overview%2F) |
+| Aurora | `D_LOG_MASK` | `INFO` (`debug\|info\|note\|warn\|err\|crit\|fatal`) | Sets DAOS client/engine log level (pair with `D_LOG_FILE`, `DD_STDERR=CRIT`) | [DAOS Troubleshooting](https://www.google.com/search?q=https%3A%2F%2Fdocs.daos.io%2Fv2.6%2Fadmin%2Ftroubleshooting%2F) |
+| Apptainer Systems | `APPTAINERENV_<VAR>` | Arbitrary string | Injects host env var into container even when `--cleanenv` (`-e`) is passed | [Apptainer Env](https://www.google.com/search?q=https%3A%2F%2Fapptainer.org%2Fdocs%2Fuser%2Fmain%2Fenvironment_and_metadata.html) |
+| Palantir Foundry/AIP | `FOUNDRY_TOKEN` | User or OAuth2 Bearer JWT | Authenticates REST v2/v3, OSDK, Foundry CLI, and Palantir MCP | [Foundry API Getting Started](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fgeneral%2Foverview%2Fgetting-started%2F) |
+| Palantir Foundry/AIP | `FOUNDRY_HOSTNAME` / `FOUNDRY_URL` | `https://<enrollment>.palantirfoundry.com` | Target enrollment hostname for SDKs, LLM proxy, Arrow Flight, and S3 API | [Foundry CLI](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fsuperrepo%2Ffoundry-cli%2F) |
+| Palantir Compute Modules | `GET_JOB_URI` / `POST_RESULT_URI` / `POST_SCHEMA_URI` | `https://localhost:8945/interactive-module/api/internal-query/{job,results,schemas}` | Reserved non-overridable Compute Module sidecar IPC URIs | [Compute Modules Containers](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fcompute-modules%2Fcontainers%2F) |
+| Palantir Compute Modules | `MODULE_AUTH_TOKEN` / `BUILD2_TOKEN` / `DEFAULT_CA_PATH` | `/opt/module-auth-token/MODULE_AUTH_TOKEN`, `/opt/build2-token/BUILD2_TOKEN`, `/etc/ssl/rubix-ca/ca.pem` | Reserved file paths for sidecar auth token, pipeline bearer token, and Rubix CA | [Compute Modules Containers](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fcompute-modules%2Fcontainers%2F) |
+
+### 3.3 Complete List of CLI Flags and Command-Line Arguments (`05_cli_flags_commands.csv`)
+
+```bash
+# 1. Sferical One / DGX SuperPOD (BCM + Slurm)
+cmsh                                                            # Interactive BCM cluster provisioning shell
+slurmd -C && slurmd -G && nvidia-smi topo -m                    # Verify NVML GRES & NVLink/NIC topology
+sbatch --gpus=8 --gres=gpu:b300:8 --gres-flags=enforce-binding --exclusive run.sh
+srun --mpi=pmix ./train_app
+
+# 2. Palantir AIP / Foundry
+foundry login --foundry-url https://<enrollment>.palantirfoundry.com
+foundry login refresh && foundry deploy && foundry update self
+npx @osdk/create-app && npx @osdk/cli
+./service/bin/init.sh start|stop|status                         # Data Connection Agent lifecycle
+./bin/keytool -import -alias corp-ca -file ca.pem -keystore ../../var/security/truststore.jks
+
+# 3. Gefion (DCAI / P1 Sandbox)
+aicentre check -p gefion --connect --verbose                    # Validate SSH config, DCAI auth & exit codes
+aicentre code --gpu --desktop                                   # Encrypted GPU IDE tunnel (10m idle timeout)
+sbatch --account=iu_0096 --mem=512G train.sh
+curl ifconfig.io                                                # Obtain public IP for xfer.dcai.dk SFTP whitelist
+
+# 4. Isambard-AI (BriCS)
+clifton auth && clifton ssh-config write                        # Issue 12h Conch SSH cert & ProxyJump config
+srun --nodes=2 --gpus=8 --cpus-per-task=72 --ntasks-per-node=1 --network=disable_rdzv_get --mpi=pmi2 ./nccl_test
+srun --reservation=interactive --gpus=1 --time=00:30:00 --pty bash
+apptainer exec --nv --bind /opt/cray/libfabric/1.22.0:/host/opt/cray/libfabric/1.22.0:ro \
+  --bind /usr/lib64:/host/usr/lib64:ro container.sif ./app
+
+# 5. LUMI (CSC / EuroHPC)
+module load LUMI/24.03 partition/G
+srun --partition=standard-g --ntasks-per-node=8 --gpus-per-node=8 \
+  --cpu-bind=map_cpu:49,57,17,25,1,9,33,41 ./select_gpu ./app   # 1 rank/GCD
+srun --cpu-bind=mask_cpu:7e000000000000,7e00000000000000,7e0000,7e000000,7e,7e00,7e00000000,7e0000000000 ./select_gpu ./app
+cotainr build app.sif --system=lumi-g --conda-env=env.yml
+module load lumio && lumio-conf && rclone copy data.tar lumi-46XXXXXXX-private:mybucket/
+
+# 6. JUPITER (JSC / EuroHPC)
+srun --tasks-per-node=4 --cpus-per-task=72 --switches=1@00:30:00 ./app
+jutil user projects && jutil project dataquota -p <proj> && jutil user jobs -o json
+sgoto <jobid> <node>                                            # Attach directly to active compute node
+
+# 7. El Capitan (LLNL / Flux)
+flux run -N 16 -n 64 -g 1 --exclusive -o spindle.push --setattr=hugepages=512GB ./app
+flux jobs -A && flux job attach -E -X <jobid> && flux dmesg
+flux account view-user $USER && flux config get
+
+# 8. Frontier (OLCF / ORNL)
+OMP_NUM_THREADS=7 srun -N1 -n8 -c7 --gpus-per-task=1 --gpu-bind=closest --cpu-bind=threads -m block:cyclic ./app
+lfs setstripe -p capacity -c 8 /lustre/orion/<proj>/scratch/$USER/run_dir
+
+# 9. Aurora (ALCF / ANL)
+qsub -l select=256 -l walltime=12:00:00 -l filesystems=flare:daos_user_fs -A <proj> -q prod job.pbs
+mpiexec -n 3072 -ppn 12 --depth=8 --cpu-bind=depth gpu_tile_compact.sh ./app
+daos container create --type=POSIX --chunk-size=2097152 --file-oclass=EC_16P3GX --dir-oclass=RP_4G1 \
+  --properties=rd_fac:3,ec_cell_sz:131072,cksum:crc32,srv_cksum:on $DAOS_POOL $DAOS_CONT
+
+# 10. BerzeLiUs (NSC / Linköping University)
+interactive --gpus=1 -C fat -t 30                               # 80GB A100 fat node (2x GPUh billing)
+interactive --reservation=1g.10gb                               # NVIDIA MIG 1g.10gb slice (0.25 GPUh/hr)
+projinfo && nscquota && jobsh -j <jobid> && jobgraph -j <jobid>
+apptainer exec --nv --cleanenv image.sif python3 train.py
+```
+
+---
+
+## 4. Programming Interfaces (API / SDK / IPC)
+
+### 4.1 Supported Protocols and IPC Layers (`06_api_sdk_ipc_protocols.csv`)
+
+* **RDMA & High-Speed Interconnects**: InfiniBand RDMA (HDR 200 Gb/s on BerzeLiUs; Quantum-2 NDR/NDR200 400/200 Gb/s on Gefion/JUPITER; Quantum-X800 800 Gb/s on Sferical One), GPUDirect RDMA & GPUDirect Storage, HPE Slingshot-11 `libfabric` CXI (`FI_PROTO_CXI`, `FI_PROTO_CXI_RNR`, `aws-ofi-nccl` on Isambard-AI/LUMI/El Capitan/Frontier/Aurora), OpenUCX (`RC-CUDA`, `DC-CUDA`, `UD-CUDA`), XPMEM (`-lxpmem`), and Cray PALS / PMI2 / PMIx v4 ([fi\_cxi(7)](https://www.google.com/search?q=https%3A%2F%2Fofiwg.github.io%2Flibfabric%2Fmain%2Fman%2Ffi_cxi.7.html), [BriCS NCCL](https://www.google.com/search?q=https%3A%2F%2Fdocs.isambard.ac.uk%2Fuser-documentation%2Fguides%2Fnccl%2F)).
+* **Storage & Data Transfer Protocols**: Lustre `o2iblnd` / `kfilnd`, IBM Storage Scale GPFS, VAST Data NVMe-oF, WEKA RDMA, DAOS `libdaos`/Mercury/DFS/POSIX `dfuse`/HDF5 VOL, Ceph S3 (`https://lumidata.eu`), Foundry S3-compatible path-style API (`https://<host>/io/s3`), Globus 5 GridFTP, UFTP (JUDAC 100 Gb/s), SFTP (`xfer.dcai.dk`), and ThinLinc ([ALCF DAOS](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fdata-management%2Fdaos%2Fdaos-overview%2F), [Foundry S3 API](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fdata-integration%2Ffoundry-s3-api%2F)).
+* **Control-Plane, RPC & Web APIs**: HTTPS REST v2/v3 JSON (Palantir Foundry/AIP, Slurm `slurmrestd`, NVIDIA BCM, FirecREST on LUMI, UNICORE on JUPITER, OLCF S3M on Frontier, `flux-restful-api` on El Capitan), Arrow Flight SQL over gRPC (`:443`), ZeroMQ CURVE + UNIX domain socket RPC/pub-sub (Flux RFC 3/6), WebSockets/SSE/HTTP chunked streaming (OSDK subscriptions, AIP Agents), and Compute Module HTTPS loopback IPC (`localhost:8945`) ([Flux RFC 3](https://www.google.com/search?q=https%3A%2F%2Fflux-framework.readthedocs.io%2Fprojects%2Fflux-rfc%2Fen%2Flatest%2Fspec_3.html), [Arrow Flight SQL](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fsql-warehousing%2Farrow-flight-sql%2F)).
+
+### 4.2 Endpoint and Method Specifications
+
+| System / API | Method & Endpoint | Auth / Scope | Request Payload / Parameters | Response Schema & Status Codes | Source |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Palantir Ontology Search** | `POST /api/v2/ontologies/{ontology}/objects/{objectType}/search` | Bearer / `api:ontologies-read` | `{where, orderBy, pageSize, pageToken, select, selectV2, excludeRid, snapshot}` | `200`: `{data, nextPageToken, totalCount}` (max 10,000 objects) | [Search Objects (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fontologies-v2-resources%2Fontology-objects%2Fsearch-objects%2F) |
+| **Palantir Ontology Action** | `POST /api/v2/ontologies/{ontology}/actions/{action}/apply` | Bearer / `api:ontologies-read api:ontologies-write` | Query: `branch`, `scenarioRid`, `transactionId`; Body: `{options, parameters}` | `200`: `{operationId, validation, edits, returnValue}` (must inspect `validation.result`) | [Apply Action (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fontologies-v2-resources%2Factions%2Fapply-action%2F) |
+| **Palantir Ontology Query** | `POST /api/v2/ontologies/{ontology}/queries/{queryApiName}/execute` | Bearer / `api:ontologies-read` | Query: `version`, `branch`, `scenarioRid`, `transactionId`; Body: `{parameters}` | `200`: `{value}` | [Execute Query (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fontologies-v2-resources%2Fqueries%2Fexecute-query%2F) |
+| **Palantir Dataset Upload** | `POST /api/v2/datasets/{datasetRid}/files/{filePath}/upload` | Bearer / `api:datasets-write` | Header: `application/octet-stream`; Query: `branchName`, `transactionType` (`APPEND\|UPDATE\|SNAPSHOT\|DELETE`), `transactionRid` | `200`: `{path, transactionRid, sizeBytes, updatedTime}` | [Upload File (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fdatasets-v2-resources%2Ffiles%2Fupload-file%2F) |
+| **Palantir AIP Agent Stream** | `POST /api/v2/aipAgents/agents/{agentRid}/sessions/{sessionRid}/streamingContinue?preview=true` | Bearer / `api:aip-agents-write` | `{userInput, parameterInputs, contextsOverride, messageId, sessionTraceId}` | `200` chunked markdown stream (concurrent calls on same session rejected) | [Streaming Continue](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Faip-agents-v2-resources%2Fsessions%2Fstreaming-continue-session%2F) |
+| **Palantir Orchestration** | `POST /api/v2/orchestration/builds/create` | Bearer / `api:orchestration-write` | `{target, branchName, fallbackBranches, forceBuild, retryCount, retryBackoffDuration, abortOnFailure}` | `200`: `Build {rid, jobRids, status}` | [Create Build (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Forchestration-v2-resources%2Fbuilds%2Fcreate-build%2F) |
+| **Palantir k-LLM Proxy** | `POST /api/v2/llm/proxy/openai/v1/responses` & `/anthropic/v1/messages` | Bearer / `api:use-language-models-execute` | Model RID (`ri.language-model-service..language-model.*`), optional `X-Palantir-session-id` (<256 chars) | `200` OpenAI/Anthropic compatible JSON; ZDR enforced | [OpenAI Proxy](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv3%2Fllm-apis%2Fmodels%2Fopenai-responses-proxy%2F) |
+| **Palantir Compute Module IPC** | `GET $GET_JOB_URI`, `POST $POST_RESULT_URI/$jobId`, `POST $POST_SCHEMA_URI` | `Module-Auth-Token` + Rubix CA | Loopback `localhost:8945`; result body `application/octet-stream`; schema `application/json` | `GET`: `200 computeModuleJobV1` or `204` idle; `POST`: `204` | [Custom Compute Client](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fcompute-modules%2Fadvanced-custom-client%2F) |
+| **NVIDIA BCM REST API** | `GET/POST/PUT /rest/v1`, `/rest/v2/entities`, `/api/rest/swagger/` | HTTP Basic or mTLS (`/root/.cm/admin.pem`) | Port `8081` HTTPS JSON entity payloads | `200`/`201` JSON cluster entity & telemetry objects | [BCM REST API](https://www.google.com/search?q=https%3A%2F%2Fdocs.nvidia.com%2Fbase-command-manager%2Fproduct-manuals%2Fdeveloper%2Frestapi) |
+| **Slurm REST (`slurmrestd`)** | `GET/POST /slurm/v0.0.XX/jobs`, `/slurm/v0.0.XX/job/submit` | `X-SLURM-USER-NAME` + `X-SLURM-USER-TOKEN` (JWT) | Port `6820` or UNIX socket; OpenAPI v3 JSON job descriptors | `200` JSON `{jobs, errors, warnings}` | [Slurm REST Quick Start](https://www.google.com/search?q=https%3A%2F%2Fslurm.schedmd.com%2Frest_quickstart.html) |
+
+### 4.3 Authentication, Authorization, and Cryptographic Signing (`07_security_auth_ports_limits.csv`)
+
+* **Palantir AIP / Foundry**: OAuth 2.0 (`/multipass/api/oauth2/token`) supporting **Authorization Code + PKCE** (`S256`, `code_verifier` 43-128 chars, rotating `refresh_token` via `offline_access`) and **Client Credentials**, plus SAML 2.0 / OIDC SSO ([Writing OAuth2 Clients](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fplatform-security-third-party%2Fwriting-oauth2-clients%2F)). Access control combines discretionary RBAC (`Owner`, `Editor`, `Viewer`) with Mandatory Access Controls: **Organizations** (disjunctive: membership in >=1 applied org), **Markings** (conjunctive: user must hold all applied markings), **CBAC**, and Restricted Views ([Organizations and Spaces](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fsecurity%2Forgs-and-spaces%2F), [CBAC](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fsecurity%2Fclassification-based-access-controls%2F)). Field-level encryption uses `CipherText`; Compute Module IPC verifies Rubix CA (`/etc/ssl/rubix-ca/ca.pem`) + `Module-Auth-Token`.
+* **HPC Federated & Hardware MFA**:
+  * **Isambard-AI**: Keycloak + GÉANT MyAccessID OIDC issues 12-hour Conch CA signed Ed25519 SSH certificates via `clifton` ([arXiv:2410.18411](https://www.google.com/search?q=https%3A%2F%2Farxiv.org%2Fhtml%2F2410.18411v1)).
+  * **JUPITER**: Passphrase-protected Ed25519 SSH key + mandatory JuDoor `from=` IP/CIDR restriction + RFC 6238 6-digit TOTP MFA (skipped for FIDO/YubiKey or EuroHPC EFP certs) ([JUPITER Access](https://www.google.com/search?q=https%3A%2F%2Fapps.fz-juelich.de%2Fjsc%2Fhps%2Fjupiter%2Faccess.html)).
+  * **LUMI**: Passwordless SSH only (MyAccessID/MyCSC SSH public keys or EuroHPC EFP SSH certs); LUMI-O S3 keys via `auth.lumidata.eu` ([LUMI SSH Keys](https://www.google.com/search?q=https%3A%2F%2Fdocs.lumi-supercomputer.eu%2Ffirststeps%2FSSH-keys%2F)).
+  * **El Capitan / Frontier / Aurora**: SSHv2 with RSA SecurID hardware OTP (El Capitan CZ/RZ/SCF Zone PIN + OTP; Frontier 4-8 digit PIN + 6-digit tokencode) or SafeNet MobilePASS+ / CryptoCard 8-digit passcode (Aurora); internal cluster crypto uses ZeroMQ CURVE + MUNGE (Flux), MUNGE + HS256 JWT (Slurm), and DAOS mTLS certificates ([LLNL Access](https://www.google.com/search?q=https%3A%2F%2Fhpc.llnl.gov%2Faccounts%2Faccessing-lc-systems), [OLCF Connecting](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fconnecting%2Findex.html), [ALCF Token](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faccount-project-management%2Faccounts-and-access%2Fobtaining-a-token%2F)).
+  * **BerzeLiUs & Gefion**: SUPR/NAISS + mandatory 6-digit TOTP 2FA (`nim.nsc.liu.se`) + verified SSH host key fingerprints on BerzeLiUs (Ampere ED25519 `SHA256:iZLFlrmwW7YbMXsR7TQxlrDfHUbQnFg5tSfB4GNCtGQ`; Hopper ED25519 `SHA256:uOAV28QYD1ZgZxx4KX+5oRUbUHBJLqxMSVTRJnW4RS4`); non-transferable DCAI credentials + SSH keys + public IP whitelisting for `xfer.dcai.dk` on Gefion ([NSC Getting Started](https://www.google.com/search?q=https%3A%2F%2Fwww.nsc.liu.se%2Fsupport%2Fsystems%2Fberzelius-getting-started%2F), [P1 Gefion](https://hpc.aicentre.dk/providers/gefion/)).
+
+### 4.4 Data Schemas, Serialization Formats, and Internal Grammars / DSLs
+
+* **Foundry Resource Identifiers (RIDs)**: Strict grammar `ri.<service>.<instance>.<type>.<uuid>` (e.g., `ri.foundry.main.dataset.<uuid>`, `ri.ontology.main.ontology.<uuid>`, `ri.actions.main.action.<uuid>`); global services omit the instance token (`ri.aip-agents..agent.<uuid>`, `ri.language-model-service..language-model.gpt-5-2`) ([Create Dataset (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fdatasets-v2-resources%2Fdatasets%2Fcreate-dataset%2F)).
+* **Foundry Storage & JSON Wire Serialization**: Tabular datasets store **Apache Parquet** (`*.snappy.parquet`) and **Apache Iceberg**; in-memory/wire transfers use **Apache Arrow** / Arrow Flight SQL; REST v2 JSON serializes `Long` and `Decimal` as strings, `Date` as ISO 8601 local date (`YYYY-MM-DD`), `Timestamp` as ISO 8601 UTC (`YYYY-MM-DDTHH:MM:SSZ`), and `Geoshape` as GeoJSON ([Apply Action (v2)](https://www.google.com/search?q=https%3A%2F%2Fpalantir.com%2Fdocs%2Ffoundry%2Fapi%2Fv2%2Fontologies-v2-resources%2Factions%2Fapply-action%2F)).
+* **HPC Resource & Storage Grammars**: Flux RFC 20 JSON resource graphs and TOML broker configs; DWS Kubernetes `v1alpha2` CRDs (`Storage`, `DirectiveBreakdown`, `Servers`) + `#DW jobdw` DSL; DAOS object class grammar (`EC_16P3GX`, `RP_4G1`, `rd_fac:3`, `cksum:crc32`); Lustre Progressive File Layout (PFL) striping grammar (`-E 256K -L mdt -E 8M -c 1 -S 1M -p performance ...`) ([Frontier Guide](https://www.google.com/search?q=https%3A%2F%2Fdocs.olcf.ornl.gov%2Fsystems%2Ffrontier_user_guide.html), [ALCF DAOS](https://www.google.com/search?q=https%3A%2F%2Fdocs.alcf.anl.gov%2Faurora%2Fdata-management%2Fdaos%2Fdaos-overview%2F)).
